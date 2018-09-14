@@ -1,4 +1,4 @@
-P → E | DEF;
+P → (E | DEF) ;
 
 E → E + E
   | E ∗ E
@@ -6,7 +6,7 @@ E → E + E
   | nro
   | ID
 
-DEF → var ID
+DEF → var ID = nro
 
 ID → letra (letra | nro)*
 

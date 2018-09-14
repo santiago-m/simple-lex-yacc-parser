@@ -16,6 +16,14 @@ digito [0-9]
 
 %%
 
+var\ {letra}({letra}|{digito})* {
+																	yylval.s=(char *) malloc(sizeof(yytext)*yyleng);
+                                	strcpy(yylval.s,yytext);
+                                	yytext = &yytext[4];
+                                	printf("VAR : %s\n",yytext);
+                                	return VAR;
+																}
+
 {digito}+                     { yylval.i = atoi(yytext);
                                 printf("INT : %d\n",atoi(yytext)); 
                                 return INT;}
@@ -25,7 +33,7 @@ digito [0-9]
                                 printf("ID : %s\n",yytext);
                                 return ID;}
 
-[+*;()]                   {  printf("%s\n",yytext);
+[+*;()=]                   {  printf("%s\n",yytext);
                                   return *yytext;}
 
 .|\n                          ; /* ignore all the rest */

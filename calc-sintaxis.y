@@ -9,15 +9,18 @@
  
 %token<i> INT
 %token<s> ID
+%token<s> VAR
 
 %type<i> expr
  
 %left '+' 
 %left '*'
+%left '='
  
 %%
  
 prog: expr ';'          { printf("%s%d\n", "Resultado: ",$1); } 
+    | def ';'           {}
     ;
   
 expr: INT               { $$ = $1; 
@@ -31,6 +34,8 @@ expr: INT               { $$ = $1;
                         }
     | '(' expr ')'              { $$ =  $2; }
     ;
+
+def: VAR                { printf("%s%s\n", "Variable Declarada: ", &($1)[4]); }
  
 %%
 
