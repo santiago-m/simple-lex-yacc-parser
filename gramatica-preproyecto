@@ -1,0 +1,14 @@
+P → E | DEF;
+
+E → E + E
+  | E ∗ E
+  | ( E )
+  | nro
+  | ID
+
+DEF → var ID
+
+ID → letra (letra | nro)*
+
+nro → [0-9]
+letra → [a-zA-Z]
