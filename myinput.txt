@@ -1,1 +1,1 @@
-var abc123;
+var a = 5;

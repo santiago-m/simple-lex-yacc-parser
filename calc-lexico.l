@@ -16,10 +16,11 @@ digito [0-9]
 
 %%
 
-var\ {letra}({letra}|{digito})* {
+var\ {letra} {
 																	yylval.s=(char *) malloc(sizeof(yytext)*yyleng);
                                 	strcpy(yylval.s,yytext);
                                 	yytext = &yytext[4];
+                                	yylval.i = *yytext - 'a';
                                 	printf("VAR : %s\n",yytext);
                                 	return VAR;
 																}
