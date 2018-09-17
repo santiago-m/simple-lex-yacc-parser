@@ -1,14 +1,14 @@
-P → (E | DEF) ;
+P → (DEF ;)+ (E ;)+
 
 E → E + E
   | E ∗ E
   | ( E )
-  | nro
+  | INT
   | ID
 
-DEF → var ID = nro
+DEF → var ID = E
 
-ID → letra (letra | nro)*
+ID → letra (letra | INT)*
 
-nro → [0-9]
+INT → [0-9]
 letra → [a-zA-Z]
