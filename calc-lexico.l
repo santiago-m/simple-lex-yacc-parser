@@ -13,31 +13,34 @@
 
 letra [a-zA-z]
 digito [0-9]
+id letra(letra|digito)*
 
 %%
 
-var\ {letra} {
-																	yylval.s=(char *) malloc(sizeof(yytext)*yyleng);
-                                	strcpy(yylval.s,yytext);
-                                	yytext = &yytext[4];
-                                	yylval.i = *yytext - 'a';
-                                	printf("VAR : %s\n",yytext);
-                                	return VAR;
-																}
+var 		{
+				printf("%s ",yytext);
+        		return VAR;
+			}
 
-{digito}+                     { yylval.i = atoi(yytext);
-                                printf("INT : %d\n",atoi(yytext)); 
-                                return INT;}
+{digito}+   { 
+				yylval.i = atoi(yytext);
+                printf("%d ",atoi(yytext)); 
+                return INT;
+			}
 
-{letra}({letra}|{digito})*    { yylval.s=(char *) malloc(sizeof(yytext)*yyleng);
-                                strcpy(yylval.s,yytext);
-                                printf("ID : %s\n",yytext);
-                                return ID;}
+{id}    	{ 
+				yylval.s=(char *) malloc(sizeof(yytext)*yyleng);
+				strcpy(yylval.s,yytext);
+				printf("%s ",yytext);
+				return ID;
+			}
 
-[+*;()=]                   {  printf("%s\n",yytext);
-                                  return *yytext;}
+[+*;()=]    {
+				printf("%s ",yytext);
+				return *yytext;
+			}
 
-.|\n                          ; /* ignore all the rest */
+.|\n ; /* ignore all the rest */
 
 %%
 
