@@ -13,7 +13,7 @@
 
 letra [a-zA-z]
 digito [0-9]
-id letra(letra|digito)*
+id {letra}({letra}|{digito})*
 
 %%
 
