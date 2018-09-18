@@ -1,4 +1,5 @@
-P → (DEF ;)+ (E ;)+
+P → DEF ; P
+		|E ;
 
 E → E + E
   | E ∗ E
@@ -8,7 +9,21 @@ E → E + E
 
 DEF → var ID = E
 
-ID → letra (letra | INT)*
+ID → letra IDCOMP
 
-INT → [0-9]
-letra → [a-zA-Z]
+IDCOMP → letra IDCOMP
+			 | INT IDCOMP
+			 | λ
+
+INT → 0
+		| 1
+		| 2
+		| 3
+		| 4
+		| 5
+		| 6
+		| 7
+		| 8
+		| 9
+
+LETRA → [a-zA-Z] {Para Simplificar}

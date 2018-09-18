@@ -17,28 +17,28 @@ id {letra}({letra}|{digito})*
 
 %%
 
-var 		{
-				printf("%s ",yytext);
-        		return VAR;
-			}
+var {
+	//printf("%s ",yytext);
+	return VAR;
+}
 
-{digito}+   { 
-				yylval.i = atoi(yytext);
-                printf("%d ",atoi(yytext)); 
-                return INT;
-			}
+{digito}+ { 
+	yylval.i = atoi(yytext);
+	//printf("%d ",atoi(yytext)); 
+	return INT;
+}
 
-{id}    	{ 
-				yylval.s=(char *) malloc(sizeof(yytext)*yyleng);
-				strcpy(yylval.s,yytext);
-				printf("%s ",yytext);
-				return ID;
-			}
+{id} { 
+	yylval.s=(char *) malloc(sizeof(yytext)*yyleng);
+	strcpy(yylval.s,yytext);
+	//printf("%s ",yytext);
+	return ID;
+}
 
-[+*;()=]    {
-				printf("%s ",yytext);
-				return *yytext;
-			}
+[+*;()=] {
+	//printf("%s ",yytext);
+	return *yytext;
+}
 
 .|\n ; /* ignore all the rest */
 

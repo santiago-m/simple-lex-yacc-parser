@@ -1,1 +1,4 @@
-var hola = 5;
+var var1 = 5;
+var var2 = 7;
+var varsuma = 7 + 5;
+7 + 5;
