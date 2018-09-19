@@ -11,6 +11,15 @@ typedef struct $ {
  
 VAR_DATA *head = (VAR_DATA *) NULL, *last = (VAR_DATA *) NULL;
 
+typedef struct $ {
+  char *data;
+  struct $ *hi;
+  struct $ *hm;
+  struct $ *hd;
+}ExpTree;
+
+ExpTree *expr_root = (ExpTree *) NULL, *expr_current = (ExpTree *) NULL;
+
 
 /* Con esta función añadimos una variable a la lista de simbolos*/
 void add_var(char *n, int v) {
