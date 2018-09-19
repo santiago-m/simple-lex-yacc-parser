@@ -1,3 +1,4 @@
 *.c
 *.out
 *.h
+!structs.h
