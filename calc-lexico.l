@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdio.h>
 
+#include "structs.h"
 #include "calc-sintaxis.tab.h"
 
 %}
