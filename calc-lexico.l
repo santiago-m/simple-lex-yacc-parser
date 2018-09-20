@@ -1,47 +1,36 @@
 %{
-
 #include <stdlib.h>
-#include <string.h>
 #include <stdio.h>
-
 #include "structs.h"
 #include "calc-sintaxis.tab.h"
-
 %}
 
 %option noyywrap
 %option yylineno
 
-letra [a-zA-z]
-digito [0-9]
-id {letra}({letra}|{digito})*
+letter [a-zA-z]
+digit [0-9]
+id {letter}({letter}|{digit})*
 
 %%
 
-var {
-	//printf("%s ",yytext);
-	return VAR;
-}
+var return VAR;
 
-{digito}+ { 
+
+{digit}+ { 
 	yylval.i = atoi(yytext);
-	//printf("%d ",atoi(yytext)); 
 	return INT;
 }
 
 {id} { 
 	yylval.s=(char *) malloc(sizeof(yytext)*yyleng);
 	strcpy(yylval.s,yytext);
-	//printf("%s ",yytext);
 	return ID;
 }
 
-[+*;()=] {
-	//printf("%s ",yytext);
-	return *yytext;
-}
+[+*;()=] return *yytext;
 
-.|\n ; /* ignore all the rest */
+.|\n ;
 
 %%
 
@@ -55,7 +44,5 @@ int main(int argc,char *argv[]){
 		yyin = fopen(argv[0],"r");
 	else
 		yyin = stdin;
-
 	yyparse();
-
 }

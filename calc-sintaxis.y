@@ -1,31 +1,20 @@
 %{
-
 #include <stdlib.h>
 #include <stdio.h>
 #include "structs.h"
  
-VAR_DATA *head = (VAR_DATA *) NULL, *last = (VAR_DATA *) NULL;
+VarNode *head = (VarNode *) NULL, *last = (VarNode *) NULL;
+ASTNode *expr_root = (ASTNode *) NULL, *expr_last = (ASTNode *) NULL;
 
-ExpTree *expr_root = (ExpTree *) NULL, *expr_last = (ExpTree *) NULL;
-
-
-/* Con esta función añadimos una variable a la lista de simbolos*/
+// Adds a variable into the symbol table  
 void add_var(char *n, int v) {
-  VAR_DATA *new_node;
-
-  /* reserva memoria para la nueva variable */
-  new_node = (VAR_DATA *) malloc (sizeof(VAR_DATA));
+  VarNode *new_node = (VarNode *) malloc (sizeof(VarNode));
   if (new_node==NULL)
     printf( "No hay memoria disponible!\n");
-  
-  //printf("\nNueva Variable:\n");
   new_node->name = n;
   new_node->value = v;
-
   new_node->next = NULL;
- 
   if (head==NULL) {
-    //printf( "Primer Variable Declarada\n");
     head = new_node;
     last = new_node;
   }
@@ -34,91 +23,72 @@ void add_var(char *n, int v) {
     last = new_node;
   }
 }
- 
-void list_vars() {
-  VAR_DATA *auxiliar; /* lo usamos para recorrer la lista */
-  int i;
 
-  i = 0;
-  auxiliar = head;
+// Prints the list of variables
+void list_vars() {
+  VarNode *aux = head;
+  int i = 0;
   printf("\nLista de Variables:\n");
-  while (auxiliar!=NULL) {
+  while (aux!=NULL) {
     printf( "name: %s, value: %d\n",
-      auxiliar->name,auxiliar->value);
-    
-    auxiliar = auxiliar->next;
+      aux->name,aux->value);
+    aux = aux->next;
     i++;
   }
   if (i == 0)
     printf( "\nLa lista está vacía!!\n" );
 }
 
-VAR_DATA *find_var(char *varname) {
-  VAR_DATA *auxiliar; /* lo usamos para recorrer la lista */
-  auxiliar = head;
-
-  while (auxiliar != NULL) {
-    if (strcmp(auxiliar->name, varname) == 0) {
-      return auxiliar;
+// Searchs for a variable, if it exist it returns the node, cc  it returns null
+VarNode *find_var(char *var_name) {
+  VarNode *aux = head;
+  while (aux != NULL) {
+    if (strcmp(aux->name, var_name) == 0) {
+      return aux;
     }
-    auxiliar = auxiliar -> next;
+    aux = aux -> next;
   }
-  return auxiliar;
+  return aux;
 }
 
-/* Con esta función añadimos una variable a la lista de simbolos*/
-ExpTree *add_leave(int v) {
-  ExpTree *new_node;
-
-  /* reserva memoria para la nueva variable */
-  new_node = (ExpTree *) malloc (sizeof(ExpTree));
+// Adds a new leave into the AST
+ASTNode *add_leave(int v) {
+  ASTNode *new_node = (ASTNode *) malloc (sizeof(ASTNode));
   if (new_node==NULL)
     printf( "No hay memoria disponible!\n");
-  
-  //printf("\nNueva Variable:\n");
   new_node->data = v;
   new_node->es_operador = false;
   new_node->hi = NULL;
   new_node->hd = NULL;
-
   return new_node;
 }
 
-ExpTree *add_node(ExpTree *hi, char op, ExpTree *hd) {
-  ExpTree *new_node;
-
-  /* reserva memoria para la nueva variable */
-  new_node = (ExpTree *) malloc (sizeof(ExpTree));
+// Adds a new leave into the AST
+ASTNode *add_node(ASTNode *hi, char op, ASTNode *hd) {
+  ASTNode *new_node = (ASTNode *) malloc (sizeof(ASTNode));
   if (new_node==NULL)
     printf( "No hay memoria disponible!\n");
-  
   new_node->data = op;
   new_node->es_operador = true;
   new_node->hi = hi;
   new_node->hd = hd;
-
   return new_node;
 }
 
-int eval(ExpTree *root) {
-
-  if (root->hi == NULL && root->hd == NULL) {
+// Evaluates an expression
+int eval(ASTNode *root) {
+  if (root->hi == NULL && root->hd == NULL) 
     return root->data;
-  }
-  
-  if ((char) root->data == '+') {
+  if ((char) root->data == '+')
     return eval(root->hi) + eval(root->hd);
-  }
-  else if ((char) root->data == '*') {
-   return eval(root->hi) * eval(root->hd); 
-  }
+  else if ((char) root->data == '*')
+    return eval(root->hi) * eval(root->hd);
 }
 
-void printTree(ExpTree *root) {
-  if (root->hi == NULL && root->hd == NULL) {
+// Prints the AST
+void printTree(ASTNode *root) {
+  if (root->hi == NULL && root->hd == NULL)
     printf("%d", root->data);
-  }
-  
   if ((char) root->data == '+') {
     printf("(");
     printTree(root->hi);
@@ -137,7 +107,7 @@ void printTree(ExpTree *root) {
 
 %}
  
-%union { int i; char *s; ExpTree *node; }
+%union { int i; char *s; ASTNode *node; }
  
 %token<i> INT
 %token<s> ID
@@ -153,41 +123,32 @@ void printTree(ExpTree *root) {
 %left '*'
  
 %%
- 
-prog: def ';' prog       
-    | expr ';'           { printTree($1);
-                           printf("\n%s %d\n", "Resultado de la expresion:", eval($1));
-                          }
-    ;
-  
-expr: INT               { $$ = $1;
-                          $$ = add_leave($1);
 
-                           //printf("%s%d\n","Constante entera:",$1);
+prog: def ';' prog
+    | expr ';'          { printf("\n%s %d\n", "Resultado de la expresion:", eval($1)); }
+    ;
+    
+expr: INT               {
+                          $$ = $1;
+                          $$ = add_leave($1);
                         }
-    | ID                { char *varname = $1;
-                          VAR_DATA *searchResult = find_var(varname);
+    | ID                {
+                          char *var_name = $1;
+                          VarNode *searchResult = find_var(var_name);
                           if (searchResult != NULL) {
                             $$ = add_leave(searchResult->value);
                           }
                           else {
-                            //VARIABLE NO DECLARADA.
                             yyerror();
                             return -1;
                           }
                         }
-    | expr '+' expr     { $$ = add_node($1, '+', $3);
-                           //printf("%s,%d,%d,%d\n","Operador Suma\n",$1,$3,$1+$3);
-                        }
-    | expr '*' expr     { $$ = add_node($1, '*', $3);
-                          // printf("%s,%d,%d,%d\n","Operador Producto\n",$1,$3,$1*$3);  
-                        }
-    | '(' expr ')'      { $$ =  $2; 
-                        }
+    | expr '+' expr     { $$ = add_node($1, '+', $3); }
+    | expr '*' expr     { $$ = add_node($1, '*', $3); }
+    | '(' expr ')'      { $$ =  $2; }
     ;
 
-def: VAR ID '=' expr  { add_var($2, eval($4));
-                        //list_vars();
-                      }
+def: VAR ID '=' expr  { add_var($2, eval($4)); }
     ;
+    
 %%
