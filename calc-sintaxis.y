@@ -125,7 +125,9 @@ void printTree(ASTNode *root) {
 %%
 
 prog: def ';' prog
-    | expr ';'          { printf("\n%s %d\n", "Resultado de la expresion:", eval($1)); }
+    | expr ';'          {
+                          printf("\n%s %d\n", "Resultado de la expresion:", eval($1));
+                        }
     ;
     
 expr: INT               {
@@ -143,12 +145,20 @@ expr: INT               {
                             return -1;
                           }
                         }
-    | expr '+' expr     { $$ = add_node($1, '+', $3); }
-    | expr '*' expr     { $$ = add_node($1, '*', $3); }
-    | '(' expr ')'      { $$ =  $2; }
+    | expr '+' expr     {
+                          $$ = add_node($1, '+', $3);
+                        }
+    | expr '*' expr     {
+                          $$ = add_node($1, '*', $3);
+                        }
+    | '(' expr ')'      {
+                          $$ =  $2;
+                        }
     ;
 
-def: VAR ID '=' expr  { add_var($2, eval($4)); }
+def: VAR ID '=' expr    {
+                          add_var($2, eval($4));
+                        }
     ;
     
 %%

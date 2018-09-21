@@ -34,11 +34,11 @@ var return VAR;
 
 %%
 
-void yyerror(){
+void yyerror() {
 	printf("%s%d\n","-> ERROR Sintactico en la linea: ",yylineno);
 }
 
-int main(int argc,char *argv[]){
+int main(int argc,char *argv[]) {
 	++argv,--argc;
 	if (argc > 0)
 		yyin = fopen(argv[0],"r");
